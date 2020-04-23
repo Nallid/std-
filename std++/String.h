@@ -21,6 +21,7 @@ namespace cString {
 	};
 
 	class String {
+
 	private:
 		char* m_buffer;
 		unsigned int m_size;
