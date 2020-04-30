@@ -1,4 +1,10 @@
 #pragma once
+
+/*
+	Author: Tucker Dillan Dorjahn
+	Version: 0.4.0
+*/
+
 #include <iostream>
 #include <chrono>
 
@@ -23,6 +29,8 @@ public:
 	   Called: time_function (add, 1, 2);
 
 	   If no arguments are taken, only the function pointer is to be put as an argument for time_function()
+
+	   Cannot take functions that include members. Looking to fix this.
 	*/
 
 	template <typename T, typename ... Args>
@@ -38,6 +46,18 @@ public:
 	}
 
 };
+
+template <typename T, typename ... Args>
+auto time_function(T function, Args&& ... args) {
+	auto start = chrono::high_resolution_clock::now();
+
+	function(std::forward<Args>(args) ...);
+
+	auto stop = chrono::high_resolution_clock::now();
+
+
+	return chrono::duration_cast<chrono::nanoseconds>(stop - start);
+}
 
 
 auto start_timer() {

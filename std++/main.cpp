@@ -1,17 +1,14 @@
 #include <iostream>
-#include <chrono>
-#include "Timer.h"
+#include <list>
 #include "String.h"
+#include <string>
 
-using namespace cString;
 
 
 int main() {
 
-    String s = "Hello";
-    s.insert("elmo", 1);
+   
 
     std::cin.get();
     
 }
-

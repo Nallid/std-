@@ -2,7 +2,7 @@
 
 /*
 	Author: Tucker Dillan Dorjahn
-	Version: 0.2.0
+	Version: 0.2.1
 
 */
 
@@ -10,6 +10,42 @@
 #include <iostream>
 #include <exception>
 #include <unordered_map>
+
+struct format_flags {
+
+	/* specifiers */
+	const char s_decimal = 'd';
+	const char s_octal = 'o';
+	const char s_hexa = 'h';
+	const char s_floating_lower = 'f';
+	const char s_floating_upper = 'F';
+	const char s_exponent_lower = 'e';
+	const char s_exponent_upper = 'E';
+	const char s_character = 'c';
+	const char s_string = 's';
+	const char s_pointer = 'p';
+	const char s_nothing = 'n';
+
+	/* flags */
+	const char f_dash = '-';
+	const char f_plus = '+';
+	const char f_space = ' ';
+	const char f_pound = '#';
+	const char f_terminate = 0;
+
+	/* precision */
+	const char p_pre = '.';
+
+	/* length specificers */
+	const char short_int = 'qq';
+	const char long_int = 'l';
+	const char long_long_int = 'll';
+
+	/* printf("Integer with precision of 2: %d.2\n", 123);
+	stream: Integer with precision of 2: 12
+
+	*/
+};
 
 
 namespace cString {
@@ -24,7 +60,7 @@ namespace cString {
 
 	private:
 		char* m_buffer;
-		unsigned int m_size;
+		size_t m_size;
 
 		void terminate() { //adds terminator character, got sick of writing this one liner a lot, so I made it into a function.
 
@@ -69,6 +105,8 @@ namespace cString {
 					throw std::out_of_range("index can only be between 0 and ");
 
 				}
+
+				return m_buffer[index];
 					
 			}
 			catch (const std::out_of_range& e) {
@@ -76,19 +114,28 @@ namespace cString {
 				std::cerr << "ERROR: " << e.what() << m_size << '\n';
 			
 			}
+
 			
 		}
 
 		char front() {
 
-			if (m_size != 0)
+			if (m_size != 0) {
+			
 				return at(0);
+			
+			}
+				
 		}
 
 		char back() {
 
-			if (m_size != 0)
+			if (m_size != 0) {
+			
 				return at(strlen(m_buffer + 1));
+			
+			}
+				
 
 		}
 
@@ -162,13 +209,17 @@ namespace cString {
 
 			}
 
+			/*
+				New string, new terminate character.
+			*/
+
 			terminate();
 
 			delete[] r_str;
 
 		}
 
-		char*& substr(unsigned int index, unsigned int len) throw (std::out_of_range) {
+		char*& substr(unsigned int index, size_t len) throw (std::out_of_range) {
 
 			try {
 
@@ -196,6 +247,38 @@ namespace cString {
 		bool is_empty() {
 
 			return m_size > 0;
+
+		}
+
+		void copy(const String& copy) {
+
+			*this = String(copy);
+
+		}
+
+		size_t capacity() {
+
+			if (m_size < 15)
+
+				return 15;
+
+			else
+
+				return m_size;
+
+		}
+
+		size_t find(const char ch) {
+
+			for (int i = 0; i < m_size; i++) {
+
+				if (m_buffer[i] == ch)
+
+					return i;
+
+			}
+
+			return -1;
 
 		}
 
@@ -264,6 +347,8 @@ namespace cString {
 
 		}
 
+
+
 		friend std::ostream& operator<<(std::ostream& stream, const String& string);
 
 		template<typename ... Args>
@@ -310,5 +395,7 @@ namespace cString {
 		
 		
 	}
+
+	
 
 }
