@@ -1,15 +1,15 @@
 #pragma once
 #include <iostream>
+#include "Node.h"
 
-template <typename m_type>
+template <typename m_type, unsigned int N>
 class Array {
 private:
 	unsigned int m_size;
-	
-public:
-	Array < m_type >(unsigned int size) : m_size(size) {}
+	Node<m_type> root;
 
-	Array < m_type >() {
-		
-	}
+public:
+	Array<m_type, N>() : m_size(N) {}
+
+
 };

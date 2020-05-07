@@ -153,6 +153,7 @@
     <ClInclude Include="Array.h" />
     <ClInclude Include="DimensionalArray.h" />
     <ClInclude Include="Log.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="Ptr.h" />
     <ClInclude Include="sort_algorithms.h" />
     <ClInclude Include="String.h" />

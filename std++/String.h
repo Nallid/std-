@@ -2,14 +2,13 @@
 
 /*
 	Author: Tucker Dillan Dorjahn
-	Version: 0.2.1
+	Version: 0.3.0
 
 */
 
 
 #include <iostream>
 #include <exception>
-#include <unordered_map>
 
 struct format_flags {
 
@@ -141,17 +140,17 @@ namespace cString {
 
 		void append(const char* string) {
 
-			m_size += strlen(string);
-
 			operator+(string);
 
 		}
 
 		void prepend(const char* string) {
 
-			m_size += strlen(string);
+			m_size = strlen(string);
 			char* t_buffer = m_buffer;
-			m_buffer = new char[m_size + 1];
+			std::cout << strlen(t_buffer) << std::endl;
+
+			std::cout << strlen(m_buffer) << std::endl;
 
 			m_buffer = (char*)string;
 			operator+(t_buffer);
@@ -166,7 +165,7 @@ namespace cString {
 		void insert(const char* string, unsigned int index) throw (std::out_of_range) {
 
 
-			char* r_str = this->substr(index, strlen(string));
+			char* r_str;
 
 			/* r_str = string[index] + string[index+1] + ... + string[n] */
 
@@ -183,6 +182,8 @@ namespace cString {
 			}
 				
 			else {
+
+				r_str = substr(index, strlen(string));
 
 				m_size += strlen(string) + 1;
 
@@ -207,26 +208,26 @@ namespace cString {
 
 				}
 
+				delete[] r_str;
+
+				/*
+					New string, new terminate character.
+				*/
+
+				terminate();
+
 			}
-
-			/*
-				New string, new terminate character.
-			*/
-
-			terminate();
-
-			delete[] r_str;
 
 		}
 
-		char*& substr(unsigned int index, size_t len) throw (std::out_of_range) {
+		char* substr(unsigned int index, size_t len) throw (std::out_of_range) {
 
 			try {
 
 				this->at(index);
 
 			}
-			catch (std::out_of_range e) { }
+			catch (std::out_of_range e) { /* using at() catch statement */ }
 
 			char* r_str = new char[len + 1];
 			r_str[len] = 0;
@@ -282,9 +283,64 @@ namespace cString {
 
 		}
 
-		String& operator+(const String& rhs) {
+		size_t find(const char* ptr) throw (std::runtime_error){
 
-			m_size = m_size + rhs.m_size;
+			try {
+
+				if (ptr == nullptr) {
+
+					throw std::runtime_error("ptr must contain a value");
+
+				}
+
+				for (int i = 0; i < m_size; i++) {
+
+					if (*ptr == m_buffer[i])
+
+						return i;
+
+				}
+
+			}
+
+			catch (std::runtime_error e) {
+
+				std::cout << e.what() << '\n';
+
+			}
+
+			/* not found */
+			return -1;
+
+		}
+
+
+		
+		int compare(const String& string) {
+
+			int result = 0;
+
+			for (int i = 0; i < m_size; i++) {
+
+				if (string.m_buffer[i] != m_buffer[i])
+					result += m_buffer[i];
+			}
+
+			return result;
+
+		}
+
+		String& to_binary(const String& string) {
+
+			
+
+		}
+
+		
+
+		String& const operator+(const String& rhs) {
+
+			m_size += rhs.m_size;
 			char* t_buffer = m_buffer;
 			m_buffer = new char[m_size + 1];
 
@@ -296,7 +352,7 @@ namespace cString {
 
 		}
 
-		String& operator+=(const String& rhs) {
+		String& const operator+=(const String& rhs) {
 
 			return operator+(rhs);
 
@@ -352,7 +408,7 @@ namespace cString {
 		friend std::ostream& operator<<(std::ostream& stream, const String& string);
 
 		template<typename ... Args>
-		friend void printf(const String& string, Args&& ... args);
+		friend void printf(const String& string, int& num , Args&& ... args);
 		friend void print(const String& string);
 
 
@@ -374,26 +430,51 @@ namespace cString {
 
 	/*TODO: implement insert() into printf() */
 	template <typename ... Args>
-	void printf(const String& string, Args&& ... args) {
+	void printf(const String& string, int& num, Args&& ... args) {
 
-		std::unordered_map<int, char> cmap; //character map
-		std::unordered_map<int, char> fmap; //format specificer map with specifier location within a string
+		//std::unordered_map<int, char> cmap; //character map
+		//std::unordered_map<int, char> fmap; //format specificer map with specifier location within a string
 
-		for (int i = 0; i < string.m_size; i++) {
+		//for (int i = 0; i < string.m_size; i++) {
 
-			cmap[i] = string.m_buffer[i];
+		//	cmap[i] = string.m_buffer[i];
+
+		//}
+
+		//for (int i = 0; i < cmap.size(); i++) {
+
+		//	if (cmap[i] == '%')
+		//		fmap[i + 1] = cmap[i + 1];
+
+		//}
+
+		//might redo this
+
+		int* specifier_loc;
+		int* spec_buffer = new int[256];
+		int num_specifiers = 0;
+
+		for ( int i = 0; i < string.m_size; i++) {
+
+			if (string.m_buffer[i] == '%') {
+
+				spec_buffer[num_specifiers] = i;
+				
+				num_specifiers++;
+
+			}
 
 		}
 
-		for (int i = 0; i < cmap.size(); i++) {
+		specifier_loc = new int[num_specifiers];
 
-			if (cmap[i] == '%')
-				fmap[i + 1] = cmap[i + 1];
+		
+		for (int i = 0; i < num_specifiers; i++) {
+
+			specifier_loc[i] = spec_buffer[i];
 
 		}
 
-		
-		
 	}
 
 	
